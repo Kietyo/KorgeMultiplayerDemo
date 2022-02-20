@@ -33,4 +33,13 @@ korge {
 	targetDesktop()
 	targetIos()
 	targetAndroidIndirect() // targetAndroidDirect()
+
+	serializationJson()
+
+
+	val ktor_version = "1.6.1"
+	project.dependencies.add("commonMainApi", "ch.qos.logback:logback-classic:1.2.3")
+	project.dependencies.add("commonMainApi", "io.ktor:ktor-client-websockets:$ktor_version")
+	project.dependencies.add("commonMainApi", "io.ktor:ktor-client-cio:$ktor_version")
+	project.dependencies.add("commonMainApi", "com.kietyo.multiplayer.gamelogic:GameLogic:1.0.0")
 }

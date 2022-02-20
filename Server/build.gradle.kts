@@ -5,9 +5,11 @@ val logback_version: String by project
 plugins {
     application
     kotlin("jvm") version "1.6.10"
+    kotlin("plugin.serialization") version "1.6.10"
+    `maven-publish`
 }
 
-group = "com.example"
+group = "com.kietyo.multiplayer.server"
 version = "0.0.1"
 application {
     mainClass.set("com.example.ApplicationKt")
@@ -15,6 +17,7 @@ application {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
@@ -23,6 +26,8 @@ dependencies {
     implementation("io.ktor:ktor-auth:$ktor_version")
     implementation("io.ktor:ktor-server-cio:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
+    implementation("com.kietyo.multiplayer.gamelogic:GameLogic:1.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }

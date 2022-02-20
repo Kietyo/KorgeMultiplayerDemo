@@ -1,12 +1,18 @@
 plugins {
     kotlin("multiplatform") version "1.6.10"
+    kotlin("plugin.serialization") version "1.6.10"
+    `maven-publish`
 }
 
-group = "me.kietm"
-version = "1.0-SNAPSHOT"
+group = "com.kietyo.multiplayer.gamelogic"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
+}
+
+dependencies {
+    commonMainImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 }
 
 kotlin {
