@@ -1,0 +1,9 @@
+# Project exclude paths
+/GameLogic/.gradle/
+/GameLogic/build/
+/GameLogic/build/classes/kotlin/jvm/main/
+/KorgeClient/build/
+/KorgeClient/build/classes/kotlin/jvm/main/
+/KorgeClient/gradle/
+/Server/.gradle/
+/Server/build/
