@@ -1,3 +1,4 @@
+import com.kietyo.multiplayer.gamelogic.model.Player
 import com.soywiz.klock.seconds
 import com.soywiz.korge.*
 import com.soywiz.korge.tween.*
@@ -44,7 +45,10 @@ suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"
                     when (message) {
                         is Frame.Binary -> TODO()
                         is Frame.Text -> {
-                            println(message.readText())
+                            val text = message.readText()
+                            println("Got text: $text")
+                            val player = json.decodeFromString<Player>(text)
+//                            println("Recieved player: $player")
                         }
                         is Frame.Close -> TODO()
                         is Frame.Ping -> TODO()
@@ -53,7 +57,7 @@ suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"
                     }
                 }
             } catch (e: Exception) {
-                println("Error while receiving messages: " + e.message)
+                println("Error while receiving messages: " + e)
             }
         }
         launch {
