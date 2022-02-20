@@ -7,3 +7,4 @@
 /KorgeClient/gradle/
 /Server/.gradle/
 /Server/build/
+/GameLogic/kotlin-js-store/
