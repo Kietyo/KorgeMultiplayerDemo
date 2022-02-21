@@ -85,10 +85,14 @@ suspend fun main() = Korge(width = 400, height = 400, bgcolor = Colors["#2b2b2b"
 
 //    https://korge-multiplayer-demo-fe4fq4lauq-uc.a.run.app/
 
+    // Note: When using the gcloud server, make sure that `host` points to the URL.
+    //  For example: host = "korge-multiplayer-demo-fe4fq4lauq-uc.a.run.app"
+    //  Also, make sure that `port` is NOT SET
     client.webSocket(
         method = HttpMethod.Get,
-        host = "korge-multiplayer-demo-fe4fq4lauq-uc.a.run.app",
-//        port = 8080,
+        host = "127.0.0.1",
+//        host = "korge-multiplayer-demo-fe4fq4lauq-uc.a.run.app",
+        port = 8080,
         path = "/game"
     ) {
         // Incoming messages
