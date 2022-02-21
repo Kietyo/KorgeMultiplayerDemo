@@ -78,17 +78,17 @@ suspend fun main() = Korge(width = 400, height = 400, bgcolor = Colors["#2b2b2b"
 
     val scene = this
 
-    getTimeMillis()
-
     val playerContainer = mutableMapOf<Int, PlayerContainer>()
 
     var myContainer: PlayerContainer
     var isFirstPlayer = true
 
+//    https://korge-multiplayer-demo-fe4fq4lauq-uc.a.run.app/
+
     client.webSocket(
         method = HttpMethod.Get,
-        host = "127.0.0.1",
-        port = 8080,
+        host = "korge-multiplayer-demo-fe4fq4lauq-uc.a.run.app",
+//        port = 8080,
         path = "/game"
     ) {
         // Incoming messages
