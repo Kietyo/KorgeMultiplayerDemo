@@ -40,3 +40,10 @@ how I got gcloud setup._
    by using the gcloud GUI.
 5. Update the websocket settings in the Korge client to point to the URL of your server. Follow documentation in the
    korge client main code for how to setup the connection.
+
+## Resources used for learning
+- https://ryanharter.com/blog/2020/12/running-ktor-web-services-on-cloud-run/
+- https://github.com/rollie42/draw-what-now
+- https://ktor.io/docs/welcome.html
+- https://ktor.io/docs/creating-web-socket-chat.html
+- https://ktor.io/docs/websocket.html
