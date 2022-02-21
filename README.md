@@ -11,6 +11,15 @@ you move your circle around.
 
 https://youtu.be/ubNeTW8fhoo
 
+## Project Directory Structure
+
+**Server:** Contains server code. Built using the Ktor framework.
+
+**KorgeClient:** Contains client code for connecting to the server. Built using the Korge framework.
+
+**GameLogic:** The term `GameLogic` is a misnomer, this is more like a bunch of shared files that're used between
+the `Server` and `KorgeClient` code.
+
 ## How to deploy locally
 
 1. Build gamelogic code so that the code is accessible via mavenLocal(). In Intellij's Gradle menu,
@@ -18,7 +27,10 @@ https://youtu.be/ubNeTW8fhoo
 2. Run the server by running `/Server/src/main/kotlin/Application.kt`
 3. Run the korge client by running `/KorgeClient/src/commonMain/kotlin/main.kt`
 
-## How to deploy on gcloud (untested for other's)
+## How to deploy on gcloud (at your own risk)
+
+_Note: This is at your own risk because I got it working for myself, but it took a lot of debugging and I didn't record
+how I got gcloud setup._
 
 1. Build gamelogic code so that the code is accessible via mavenLocal(). In Intellij's Gradle menu,
    run `publishToMavenLocal`.
