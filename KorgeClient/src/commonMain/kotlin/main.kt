@@ -1,35 +1,80 @@
+import com.kietyo.multiplayer.gamelogic.model.Packet
 import com.kietyo.multiplayer.gamelogic.model.Player
-import com.soywiz.klock.seconds
+import com.kietyo.multiplayer.gamelogic.model.decodeFromStringOrNull
+import com.soywiz.korev.Key
+import com.soywiz.korev.KeyEvent
 import com.soywiz.korge.*
-import com.soywiz.korge.tween.*
+import com.soywiz.korge.component.KeyComponent
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
-import com.soywiz.korim.format.*
-import com.soywiz.korio.async.runBlockingNoJs
-import com.soywiz.korio.file.std.*
-import com.soywiz.korma.geom.degrees
-import com.soywiz.korma.interpolation.Easing
 import io.ktor.client.*
 import io.ktor.client.features.websocket.*
 import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
-import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
+val json = Json
+
 class PlayerContainer(val id: Int) : Container() {
-    val circle = circle(1.0)
+    val circle = circle(50.0, fill = Colors.TOMATO)
+    val text = text(id.toString()) {
+        scale = 2.0
+        centerOn(circle)
+    }
+
+    fun updatePlayer(newPlayerState: Player) {
+        require(id == newPlayerState.id)
+        x = newPlayerState.x
+        y = newPlayerState.y
+    }
+
+    fun toPlayer(): Player {
+        return Player(id, x, y)
+    }
 }
+
+class MovementKeys(
+    override val view: PlayerContainer,
+    val session: WebSocketSession
+) : KeyComponent {
+    val deltaX = 5.0
+    val deltaY = 5.0
+
+    override fun Views.onKeyEvent(event: KeyEvent) {
+        when (event.key) {
+            Key.W -> {
+                view.y -= deltaY
+            }
+            Key.S -> {
+                view.y += deltaY
+            }
+            Key.A -> {
+                view.x -= deltaX
+            }
+            Key.D -> {
+                view.x += deltaX
+            }
+        }
+        launch {
+            session.send(json.encodeToString(view.toPlayer()))
+        }
+    }
+}
+
 
 suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"]) {
     val client = HttpClient {
         install(WebSockets)
     }
 
-    val json = Json
+    val scene = this
 
-    val playerContainers = mutableMapOf<Int, PlayerContainer>()
+    val playerContainer = mutableMapOf<Int, PlayerContainer>()
+
+    var myContainer: PlayerContainer
+    var isFirstPlayer = true
 
     client.webSocket(
         method = HttpMethod.Get,
@@ -38,7 +83,7 @@ suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"
         path = "/game"
     ) {
         // Incoming messages
-        launch {
+        val incomingJob = launch {
             try {
                 for (message in incoming) {
                     println("Received frame!")
@@ -47,8 +92,33 @@ suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"
                         is Frame.Text -> {
                             val text = message.readText()
                             println("Got text: $text")
-                            val player = json.decodeFromString<Player>(text)
-//                            println("Recieved player: $player")
+
+                            val packet = json.decodeFromStringOrNull<Packet>(text) ?: continue
+                            println("Recieved packet: $packet")
+
+                            when (packet.data) {
+                                is Player -> {
+                                    val player = packet.data as Player
+                                    if (playerContainer.containsKey(player.id)) {
+                                        playerContainer[player.id]!!.updatePlayer(player)
+                                    } else {
+                                        myContainer = PlayerContainer(player.id).addTo(scene)
+                                        playerContainer[player.id] = myContainer
+                                        if (isFirstPlayer) {
+                                            println("Added first player container!")
+                                            myContainer.addComponent(
+                                                MovementKeys(
+                                                    myContainer,
+                                                    this@webSocket
+                                                )
+                                            )
+                                            isFirstPlayer = false
+                                        }
+                                    }
+                                }
+                            }
+
+
                         }
                         is Frame.Close -> TODO()
                         is Frame.Ping -> TODO()
@@ -57,24 +127,22 @@ suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"
                     }
                 }
             } catch (e: Exception) {
-                println("Error while receiving messages: " + e)
+                println("Error while receiving messages: $e")
             }
         }
-        launch {
 
-        }
+        incomingJob.join()
 
-        while(true) {}
+        //        while(true) {}
 
-//        val messageOutputRoutine = launch { outputMessages() }
-//        val userInputRoutine = launch { inputMessages() }
-//
-//        userInputRoutine.join()
-//        messageOutputRoutine.cancelAndJoin()
+        //        val messageOutputRoutine = launch { outputMessages() }
+        //        val userInputRoutine = launch { inputMessages() }
+        //
+        //        userInputRoutine.join()
+        //        messageOutputRoutine.cancelAndJoin()
     }
-
-	client.close()
-	println("Client closed! good bye!")
+    //	client.close()
+    //	println("Client closed! good bye!")
 }
 
 suspend fun DefaultClientWebSocketSession.outputMessages() {
