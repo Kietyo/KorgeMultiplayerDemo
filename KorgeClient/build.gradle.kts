@@ -42,4 +42,5 @@ korge {
 	project.dependencies.add("commonMainApi", "io.ktor:ktor-client-websockets:$ktor_version")
 	project.dependencies.add("commonMainApi", "io.ktor:ktor-client-cio:$ktor_version")
 	project.dependencies.add("commonMainApi", "com.kietyo.multiplayer.gamelogic:GameLogic:1.0.0")
+	project.dependencies.add("commonMainApi", "org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
 }

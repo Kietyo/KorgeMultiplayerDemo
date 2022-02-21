@@ -13,6 +13,7 @@ repositories {
 
 dependencies {
     commonMainImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    commonMainImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
 }
 
 kotlin {

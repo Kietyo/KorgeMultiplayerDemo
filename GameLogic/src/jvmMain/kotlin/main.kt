@@ -1,6 +1,7 @@
 import com.kietyo.multiplayer.gamelogic.model.Packet
 import com.kietyo.multiplayer.gamelogic.model.PacketType
 import com.kietyo.multiplayer.gamelogic.model.Player
+import kotlinx.datetime.Clock
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -15,4 +16,9 @@ import kotlinx.serialization.json.Json
 //    val data = Json.decodeFromString<Packet>(str)
 //
 //    println(data)
+//
+//    val currTime = Clock.System.now()
+//
+//    println(currTime)
+//
 //}

@@ -44,6 +44,9 @@ fun Application.configureSockets() {
                     it.key != playerConnection.id
                 }.forEach {
                     it.value.session.send(currentPlayerJson)
+                    send(json.encodeToString(
+                        Packet(PacketType.PLAYER_UPDATE, it.value.player)
+                    ))
                 }
                 for (frame in incoming) {
                     when (frame) {

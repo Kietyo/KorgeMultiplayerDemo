@@ -1,19 +1,26 @@
-import com.kietyo.multiplayer.gamelogic.model.Packet
-import com.kietyo.multiplayer.gamelogic.model.Player
-import com.kietyo.multiplayer.gamelogic.model.decodeFromStringOrNull
+import com.kietyo.multiplayer.gamelogic.model.*
+import com.soywiz.klock.Date
 import com.soywiz.korev.Key
 import com.soywiz.korev.KeyEvent
 import com.soywiz.korge.*
+import com.soywiz.korge.animate.play
 import com.soywiz.korge.component.KeyComponent
+import com.soywiz.korge.component.docking.dockedTo
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
+import com.soywiz.korma.geom.Anchor
 import io.ktor.client.*
 import io.ktor.client.features.websocket.*
 import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
+import io.ktor.util.date.*
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlin.time.AbstractLongTimeSource
+import kotlin.time.DurationUnit
+import kotlin.time.measureTime
+import kotlin.time.toDuration
 
 val json = Json
 
@@ -58,18 +65,20 @@ class MovementKeys(
             }
         }
         launch {
-            session.send(json.encodeToString(view.toPlayer()))
+            session.send(json.encodeToString(Packet(PacketType.PLAYER_UPDATE, view.toPlayer())))
         }
     }
 }
 
 
-suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"]) {
+suspend fun main() = Korge(width = 400, height = 400, bgcolor = Colors["#2b2b2b"]) {
     val client = HttpClient {
         install(WebSockets)
     }
 
     val scene = this
+
+    getTimeMillis()
 
     val playerContainer = mutableMapOf<Int, PlayerContainer>()
 
@@ -96,6 +105,13 @@ suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"
                             val packet = json.decodeFromStringOrNull<Packet>(text) ?: continue
                             println("Recieved packet: $packet")
 
+                            val packetLatency = (getCurrentTimeMillis() - packet
+                                .creationTimeMillis).toDuration(DurationUnit.MILLISECONDS)
+
+                            println(
+                                "Packet latency: $packetLatency"
+                            )
+
                             when (packet.data) {
                                 is Player -> {
                                     val player = packet.data as Player
@@ -103,6 +119,7 @@ suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"
                                         playerContainer[player.id]!!.updatePlayer(player)
                                     } else {
                                         myContainer = PlayerContainer(player.id).addTo(scene)
+                                        myContainer.updatePlayer(player)
                                         playerContainer[player.id] = myContainer
                                         if (isFirstPlayer) {
                                             println("Added first player container!")
@@ -112,6 +129,9 @@ suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"
                                                     this@webSocket
                                                 )
                                             )
+                                            text("You are player: ${player.id}") {
+                                                alignBottomToBottomOf(scene)
+                                            }
                                             isFirstPlayer = false
                                         }
                                     }
