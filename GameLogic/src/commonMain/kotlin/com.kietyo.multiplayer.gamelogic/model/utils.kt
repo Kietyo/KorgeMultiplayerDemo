@@ -1,5 +1,6 @@
 package com.kietyo.multiplayer.gamelogic.model
 
+import com.soywiz.klock.DateTime
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 
@@ -10,3 +11,5 @@ public inline fun <reified T> Json.decodeFromStringOrNull(string: String): T? {
         null
     }
 }
+
+fun getCurrentTimeMillis() = DateTime.nowUnixLong()

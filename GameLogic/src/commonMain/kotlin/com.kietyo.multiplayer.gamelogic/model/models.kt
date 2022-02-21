@@ -15,6 +15,7 @@ sealed class PacketData
 data class Packet(
     val type: PacketType,
     val data: PacketData,
+    val creationTimeMillis: Long = getCurrentTimeMillis()
 )
 
 @Serializable

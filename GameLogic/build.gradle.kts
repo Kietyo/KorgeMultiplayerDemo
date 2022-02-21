@@ -12,10 +12,11 @@ repositories {
 }
 
 val ktor_version = "1.6.1"
+val klockVersion = "2.2.0"
 
 dependencies {
     commonMainImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
-//    commonMainImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
+    commonMainImplementation("com.soywiz.korlibs.klock:klock:$klockVersion")
 //    commonMainImplementation("io.ktor:ktor-client-js:$ktor_version")
 //    commonMainImplementation("io.ktor:ktor-client-websockets:$ktor_version")
 }
