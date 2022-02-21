@@ -1,6 +1,5 @@
 package com.kietyo.multiplayer.gamelogic.model
 
-import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 
 enum class PacketType {
@@ -16,7 +15,6 @@ sealed class PacketData
 data class Packet(
     val type: PacketType,
     val data: PacketData,
-    val creationTimeMillis: Long = getCurrentTimeMillis()
 )
 
 @Serializable

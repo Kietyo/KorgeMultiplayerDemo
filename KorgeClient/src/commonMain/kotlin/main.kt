@@ -109,12 +109,12 @@ suspend fun main() = Korge(width = 400, height = 400, bgcolor = Colors["#2b2b2b"
                             val packet = json.decodeFromStringOrNull<Packet>(text) ?: continue
                             println("Recieved packet: $packet")
 
-                            val packetLatency = (getCurrentTimeMillis() - packet
-                                .creationTimeMillis).toDuration(DurationUnit.MILLISECONDS)
+//                            val packetLatency = (getCurrentTimeMillis() - packet
+//                                .creationTimeMillis).toDuration(DurationUnit.MILLISECONDS)
 
-                            println(
-                                "Packet latency: $packetLatency"
-                            )
+//                            println(
+//                                "Packet latency: $packetLatency"
+//                            )
 
                             when (packet.data) {
                                 is Player -> {
