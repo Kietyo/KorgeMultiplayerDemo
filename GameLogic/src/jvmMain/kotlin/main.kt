@@ -1,5 +1,4 @@
 import com.kietyo.multiplayer.gamelogic.model.Packet
-import com.kietyo.multiplayer.gamelogic.model.PacketType
 import com.kietyo.multiplayer.gamelogic.model.Player
 import com.soywiz.klock.DateTime
 import kotlinx.serialization.decodeFromString

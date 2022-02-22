@@ -7,6 +7,10 @@ multiplayer demo is very simple. When a user is connected to a server, they're a
 around. The circle can be moved with WASD keys. All other clients connected to the server should be able to see you as
 you move your circle around.
 
+## Try it now!
+
+https://kietyo.github.io/
+
 ## Video Demo
 
 https://youtu.be/ubNeTW8fhoo

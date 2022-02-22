@@ -1,25 +1,18 @@
 import com.kietyo.multiplayer.gamelogic.model.*
-import com.soywiz.klock.Date
 import com.soywiz.korev.Key
 import com.soywiz.korev.KeyEvent
 import com.soywiz.korge.*
-import com.soywiz.korge.animate.play
 import com.soywiz.korge.component.KeyComponent
-import com.soywiz.korge.component.docking.dockedTo
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
-import com.soywiz.korma.geom.Anchor
 import io.ktor.client.*
 import io.ktor.client.features.websocket.*
 import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
-import io.ktor.util.date.*
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlin.time.AbstractLongTimeSource
 import kotlin.time.DurationUnit
-import kotlin.time.measureTime
 import kotlin.time.toDuration
 
 val json = Json
@@ -65,7 +58,7 @@ class MovementKeys(
             }
         }
         launch {
-            session.send(json.encodeToString(Packet(PacketType.PLAYER_UPDATE, view.toPlayer())))
+            session.send(json.encodeToString(Packet(view.toPlayer())))
         }
     }
 }
@@ -78,7 +71,7 @@ suspend fun main() = Korge(width = 400, height = 400, bgcolor = Colors["#2b2b2b"
 
     val scene = this
 
-    val playerContainer = mutableMapOf<Int, PlayerContainer>()
+    val playerContainers = mutableMapOf<Int, PlayerContainer>()
 
     var myContainer: PlayerContainer
     var isFirstPlayer = true
@@ -88,11 +81,12 @@ suspend fun main() = Korge(width = 400, height = 400, bgcolor = Colors["#2b2b2b"
     // Note: When using the gcloud server, make sure that `host` points to the URL.
     //  For example: host = "korge-multiplayer-demo-fe4fq4lauq-uc.a.run.app"
     //  Also, make sure that `port` is NOT SET
-    client.webSocket(
+
+    client.wss(
         method = HttpMethod.Get,
-        host = "127.0.0.1",
-//        host = "korge-multiplayer-demo-fe4fq4lauq-uc.a.run.app",
-        port = 8080,
+        host = "korge-multiplayer-demo-fe4fq4lauq-uc.a.run.app",
+        //        host = "127.0.0.1",
+        //        port = 8080,
         path = "/game"
     ) {
         // Incoming messages
@@ -109,28 +103,28 @@ suspend fun main() = Korge(width = 400, height = 400, bgcolor = Colors["#2b2b2b"
                             val packet = json.decodeFromStringOrNull<Packet>(text) ?: continue
                             println("Recieved packet: $packet")
 
-//                            val packetLatency = (getCurrentTimeMillis() - packet
-//                                .creationTimeMillis).toDuration(DurationUnit.MILLISECONDS)
+                            val packetLatency = (getCurrentTimeMillis() - packet
+                                .creationTimeMillis).toDuration(DurationUnit.MILLISECONDS)
 
-//                            println(
-//                                "Packet latency: $packetLatency"
-//                            )
+                            println(
+                                "Packet latency: $packetLatency"
+                            )
 
                             when (packet.data) {
                                 is Player -> {
                                     val player = packet.data as Player
-                                    if (playerContainer.containsKey(player.id)) {
-                                        playerContainer[player.id]!!.updatePlayer(player)
+                                    if (playerContainers.containsKey(player.id)) {
+                                        playerContainers[player.id]!!.updatePlayer(player)
                                     } else {
                                         myContainer = PlayerContainer(player.id).addTo(scene)
                                         myContainer.updatePlayer(player)
-                                        playerContainer[player.id] = myContainer
+                                        playerContainers[player.id] = myContainer
                                         if (isFirstPlayer) {
                                             println("Added first player container!")
                                             myContainer.addComponent(
                                                 MovementKeys(
                                                     myContainer,
-                                                    this@webSocket
+                                                    this@wss
                                                 )
                                             )
                                             text("You are player: ${player.id}") {
@@ -140,8 +134,14 @@ suspend fun main() = Korge(width = 400, height = 400, bgcolor = Colors["#2b2b2b"
                                         }
                                     }
                                 }
+                                is PlayerRemoved -> {
+                                    val data = packet.data as PlayerRemoved
+                                    println("Player to remove: $data")
+                                    val playerContainer = playerContainers[data.id] ?: continue
+                                    playerContainer.removeFromParent()
+                                    playerContainers.remove(data.id)
+                                }
                             }
-
 
                         }
                         is Frame.Close -> TODO()

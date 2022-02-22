@@ -1,10 +1,7 @@
 package com.example.plugins
 
 import com.example.PlayerConnection
-import com.kietyo.multiplayer.gamelogic.model.Packet
-import com.kietyo.multiplayer.gamelogic.model.PacketType
-import com.kietyo.multiplayer.gamelogic.model.Player
-import com.kietyo.multiplayer.gamelogic.model.decodeFromStringOrNull
+import com.kietyo.multiplayer.gamelogic.model.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.websocket.*
 import java.time.*
@@ -17,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap
 fun Application.configureSockets() {
     install(WebSockets) {
         pingPeriod = Duration.ofSeconds(15)
-        timeout = Duration.ofSeconds(120)
+        timeout = Duration.ofSeconds(15)
         maxFrameSize = Long.MAX_VALUE
         masking = false
     }
@@ -35,7 +32,6 @@ fun Application.configureSockets() {
                 send("You are connected! There are ${playerConnections.size} users here.")
                 val currentPlayerJson = json.encodeToString(
                     Packet(
-                        PacketType.PLAYER_UPDATE,
                         playerConnection.player
                     )
                 )
@@ -45,7 +41,7 @@ fun Application.configureSockets() {
                 }.forEach {
                     it.value.session.send(currentPlayerJson)
                     send(json.encodeToString(
-                        Packet(PacketType.PLAYER_UPDATE, it.value.player)
+                        Packet(it.value.player)
                     ))
                 }
                 for (frame in incoming) {
@@ -68,11 +64,6 @@ fun Application.configureSockets() {
                                     }
                                 }
                             }
-
-//                            outgoing.send(Frame.Text("YOU SAID: $text"))
-//                            if (text.equals("bye", ignoreCase = true)) {
-//                                close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
-//                            }
                         }
                         is Frame.Binary -> TODO()
                         is Frame.Close -> TODO()
@@ -86,7 +77,9 @@ fun Application.configureSockets() {
                 playerConnections.remove(playerConnection.id)
                 println("Removing $playerConnection")
                 playerConnections.forEach {
-                    it.value.session.send("${playerConnection} has left the room")
+                    it.value.session.send(json.encodeToString(Packet(
+                        PlayerRemoved(playerConnection.id)
+                    )))
                 }
             }
 
