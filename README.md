@@ -11,6 +11,8 @@ you move your circle around.
 
 https://kietyo.github.io/
 
+Note: You can open it up in multiple tabs to create multiple clients.
+
 ## Video Demo
 
 https://youtu.be/ubNeTW8fhoo
