@@ -5,11 +5,11 @@ import com.soywiz.korge.*
 import com.soywiz.korge.component.KeyComponent
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
+import com.soywiz.korio.async.launch
 import io.ktor.client.*
 import io.ktor.client.features.websocket.*
 import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
-import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.time.DurationUnit
@@ -63,6 +63,10 @@ class MovementKeys(
     }
 }
 
+// If true, uses the locally deployed server. (e.g: localhost)
+// If false, uses the cloud deployed server.
+//   Hosted at `korge-multiplayer-demo-fe4fq4lauq-uc.a.run.app`
+const val IS_LOCAL_DEPLOYMENT = true
 
 suspend fun main() = Korge(width = 400, height = 400, bgcolor = Colors["#2b2b2b"]) {
     val client = HttpClient {
@@ -76,19 +80,7 @@ suspend fun main() = Korge(width = 400, height = 400, bgcolor = Colors["#2b2b2b"
     var myContainer: PlayerContainer
     var isFirstPlayer = true
 
-    //    https://korge-multiplayer-demo-fe4fq4lauq-uc.a.run.app/
-
-    // Note: When using the gcloud server, make sure that `host` points to the URL.
-    //  For example: host = "korge-multiplayer-demo-fe4fq4lauq-uc.a.run.app"
-    //  Also, make sure that `port` is NOT SET
-
-    client.wss(
-        method = HttpMethod.Get,
-        //        host = "korge-multiplayer-demo-fe4fq4lauq-uc.a.run.app",
-        host = "127.0.0.1",
-        port = 8080,
-        path = "/game"
-    ) {
+    val runLambda: suspend DefaultClientWebSocketSession.() -> Unit = websocket@{
         // Incoming messages
         val incomingJob = launch {
             try {
@@ -124,7 +116,7 @@ suspend fun main() = Korge(width = 400, height = 400, bgcolor = Colors["#2b2b2b"
                                             myContainer.addComponent(
                                                 MovementKeys(
                                                     myContainer,
-                                                    this@wss
+                                                    this@websocket
                                                 )
                                             )
                                             text("You are player: ${player.id}") {
@@ -154,19 +146,29 @@ suspend fun main() = Korge(width = 400, height = 400, bgcolor = Colors["#2b2b2b"
                 println("Error while receiving messages: $e")
             }
         }
-
         incomingJob.join()
-
-        //        while(true) {}
-
-        //        val messageOutputRoutine = launch { outputMessages() }
-        //        val userInputRoutine = launch { inputMessages() }
-        //
-        //        userInputRoutine.join()
-        //        messageOutputRoutine.cancelAndJoin()
     }
-    //	client.close()
-    //	println("Client closed! good bye!")
+
+    if (IS_LOCAL_DEPLOYMENT) {
+        client.ws(
+            method = HttpMethod.Get,
+            host = "127.0.0.1",
+            port = 8080,
+            path = "/game"
+        ) websocket@{
+            runLambda()
+        }
+    } else {
+        client.wss(
+            method = HttpMethod.Get,
+            host = "korge-multiplayer-demo-fe4fq4lauq-uc.a.run.app",
+            path = "/game"
+        ) websocket@{
+            runLambda()
+        }
+    }
+
+
 }
 
 suspend fun DefaultClientWebSocketSession.outputMessages() {
