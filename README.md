@@ -32,7 +32,7 @@ the `Server` and `KorgeClient` code.
    run `GameLogic -> Tasks -> publishing -> publishToMavenLocal`.
 2. Run the server by running `/Server/src/main/kotlin/Application.kt`
 3. Run the korge client by running `/KorgeClient/src/commonMain/kotlin/main.kt`.
-   1. Note: If you want to connect to the cloud hosted server, set `IS_LOCAL_DEPLOYMENT = true`.
+   1. Note: If you want to connect to the cloud hosted server, set `IS_LOCAL_DEPLOYMENT = false`.
 
 ## How to deploy on gcloud (at your own risk)
 
