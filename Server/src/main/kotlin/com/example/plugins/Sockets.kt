@@ -63,6 +63,8 @@ fun Application.configureSockets() {
                                         it.value.session.send(text)
                                     }
                                 }
+
+                                else -> TODO()
                             }
                         }
                         is Frame.Binary -> TODO()
