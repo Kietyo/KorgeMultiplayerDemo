@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="17">
       <module name="com.example.server" target="16" />
       <module name="com.example.server.main" target="16" />
       <module name="com.example.server.test" target="16" />
+      <module name="GameLogic" target="16" />
+      <module name="GameLogic.main" target="16" />
+      <module name="GameLogic.test" target="16" />
+      <module name="KorgeClient" target="11" />
+      <module name="Server" target="11" />
+      <module name="Server.main" target="11" />
+      <module name="Server.test" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
