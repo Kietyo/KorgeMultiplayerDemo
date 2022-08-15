@@ -28,10 +28,8 @@ the `Server` and `KorgeClient` code.
 
 ## How to deploy locally
 
-1. Build gamelogic code so that the code is accessible via mavenLocal(). In Intellij's Gradle menu,
-   run `GameLogic -> Tasks -> publishing -> publishToMavenLocal`.
-2. Run the server by running `/Server/src/main/kotlin/Application.kt`
-3. Run the korge client by running `/KorgeClient/src/commonMain/kotlin/main.kt`.
+1. Run the server by running `KorgeMultiplayer -> Tasks -> application -> run` in the IntelliJ Gradle panel.
+2. Run the korge client by running `KorgeMultiplayer -> Tasks -> run -> runJvm`.
    1. Note: If you want to connect to the cloud hosted server, set `IS_LOCAL_DEPLOYMENT = false`.
 
 ## How to deploy on gcloud (at your own risk)
@@ -39,13 +37,11 @@ the `Server` and `KorgeClient` code.
 _Note: This is at your own risk because I got it working for myself, but it took a lot of debugging and I didn't record
 how I got gcloud setup._
 
-1. Build gamelogic code so that the code is accessible via mavenLocal(). In Intellij's Gradle menu,
-   run `publishToMavenLocal`.
-2. You may need to modify `Server/build.gradle.kts` with your gcloud project names first.
-3. Run `Server -> Tasks -> jib -> jibDockerBuild`
-4. If you've setup your gcloud correctly, the image should be available in the `Container Registry`. You can deploy it
+1. You may need to modify `Server/build.gradle.kts` with your gcloud project names first.
+2. Run `KorgeMultiplayer -> Tasks -> jib -> jibDockerBuild`
+3. If you've setup your gcloud correctly, the image should be available in the `Container Registry`. You can deploy it
    by using the gcloud GUI.
-5. Update the websocket settings in the Korge client to point to the URL of your server. Follow documentation in the
+4. Update the websocket settings in the Korge client to point to the URL of your server. Follow documentation in the
    korge client main code for how to setup the connection.
 
 ## Resources used for learning
