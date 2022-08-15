@@ -56,6 +56,7 @@ class MovementKeys(
             Key.D -> {
                 view.x += deltaX
             }
+            else -> Unit
         }
         launch {
             session.send(json.encodeToString(Packet(view.toPlayer())))

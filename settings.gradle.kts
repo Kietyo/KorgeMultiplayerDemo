@@ -11,7 +11,8 @@ pluginManagement {
     }
 }
 
+rootProject.name = "KorgeMultiplayer"
 
 include(":GameLogic")
-//include(":KorgeClient")
+include(":KorgeClient")
 include(":Server")

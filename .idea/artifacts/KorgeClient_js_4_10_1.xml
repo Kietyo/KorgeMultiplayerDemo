@@ -2,7 +2,7 @@
   <artifact type="jar" name="KorgeClient-js-4.10.1">
     <output-path>$PROJECT_DIR$/KorgeClient/build/libs</output-path>
     <root id="archive" name="KorgeClient-js-4.10.1.jar">
-      <element id="module-output" name="KorgeClient.jsMain" />
+      <element id="module-output" name="KorgeMultiplayer.KorgeClient.jsMain" />
     </root>
   </artifact>
 </component>

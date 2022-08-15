@@ -11,6 +11,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/GameLogic" />
+            <option value="$PROJECT_DIR$/KorgeClient" />
             <option value="$PROJECT_DIR$/Server" />
           </set>
         </option>

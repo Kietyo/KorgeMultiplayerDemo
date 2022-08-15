@@ -11,11 +11,9 @@ buildscript {
 }
 
 plugins {
-    val kotlin_version: String = "1.7.10"
-
-    kotlin("jvm") version kotlin_version apply false
-    kotlin("multiplatform") version kotlin_version apply false
-    kotlin("plugin.serialization") version kotlin_version apply false
+    kotlin("jvm") apply false
+    kotlin("multiplatform") apply false
+    kotlin("plugin.serialization") apply false
 
     println("Finished setting up plugins")
 }

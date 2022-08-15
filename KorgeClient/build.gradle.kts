@@ -1,7 +1,7 @@
 import com.soywiz.korge.gradle.*
 
 buildscript {
-	val korgePluginVersion: String by project
+	val korge_version: String by project
 
 	repositories {
 		mavenLocal()
@@ -10,7 +10,7 @@ buildscript {
 		maven { url = uri("https://plugins.gradle.org/m2/") }
 	}
 	dependencies {
-		classpath("com.soywiz.korlibs.korge.plugins:korge-gradle-plugin:$korgePluginVersion")
+		classpath("com.soywiz.korlibs.korge.plugins:korge-gradle-plugin:$korge_version")
 	}
 }
 
@@ -18,7 +18,7 @@ apply<KorgeGradlePlugin>()
 
 korge {
 	id = "com.kietyo.multiplayer.korge_client.example"
-	supportBox2d()
+//	supportBox2d()
 // To enable all targets at once
 
 	//targetAll()
@@ -35,7 +35,6 @@ korge {
 	targetAndroidIndirect() // targetAndroidDirect()
 
 	serializationJson()
-
 
 	val ktor_version = "1.6.6"
 	project.dependencies.add("commonMainApi", "ch.qos.logback:logback-classic:1.2.3")
